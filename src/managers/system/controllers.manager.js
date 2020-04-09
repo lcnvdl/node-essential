@@ -24,7 +24,7 @@ class ControllersManager {
         let value = undefined;
 
         while (all.length > 0 && value === undefined) {
-            const controller = all.unshift();
+            const controller = all.pop();
             value = await controller.actionIfExists(name, id, args);
         }
 
