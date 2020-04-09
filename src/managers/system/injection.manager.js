@@ -8,6 +8,7 @@ class InjectionManager {
      * @param {string|*} nameOrConstructor Name or constructor
      * @param {Function} [creator] Function that instances the controller
      * @param {*} [settings] Settings
+     * @return {InjectionManager}
      */
     add(nameOrConstructor, creator, settings) {
         const name = getName(nameOrConstructor);
@@ -26,6 +27,26 @@ class InjectionManager {
                 throw new Error("A non-lazy constructor can only work in a singleton-scoped context");
             }
         }
+
+        return this;
+    }
+
+    /**
+     * @param {Array} [array] Array of constructors, or array of {nameOrConstructor, creator, settings}
+     * @return {InjectionManager}
+     */
+    addRange(array) {
+        array.forEach(m => {
+            if (m.nameOrConstructor) {
+                const { nameOrConstructor, creator, settings } = m;
+                this.add(nameOrConstructor, creator, settings);
+            }
+            else {
+                this.add(m);
+            }
+        });
+
+        return this;
     }
 
     /**
@@ -38,6 +59,7 @@ class InjectionManager {
 
     destroy(nameOrConstructor) {
         delete this._instances[getName(nameOrConstructor)];
+        return this;
     }
 
     getName(nameOrConstructor) {
@@ -81,6 +103,8 @@ class InjectionManager {
         Object.keys(dict).forEach(k => {
             dict[k] = this.get(k);
         });
+
+        return this;
     }
 }
 

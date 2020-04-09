@@ -15,25 +15,30 @@ module.exports = {
         }
     },
     System: {
+        Extensions: {
+            get Array() {
+                return require("./system/extensions/array");
+            }
+        },
         Data: {
             get Serializable() {
-                return require("./system/data/serializable")
+                return require("./system/data/serializable");
             }
         },
         Types: {
             get Range() {
-                return require("./system/types/range")
+                return require("./system/types/range");
             }
         },
         Validators: {
             get Required() {
-                return require("./system/validators/required")
+                return require("./system/validators/required");
             },
             get All() {
-                return require("./system/validators/validators")
+                return require("./system/validators/validators");
             },
             get ValidatorBase() {
-                return require("./system/validators/validator-base")
+                return require("./system/validators/validator-base");
             }
         }
     }
