@@ -25,8 +25,33 @@ class ControllerBase {
         return camelCase(`${name}_action`);
     }
 
+    existsAction(name) {
+        if (!name || name == "") {
+            return false;
+        }
+
+        const actionName = this.mapAction(name);
+        const action = this[actionName];
+
+        return !!action;
+    }
+
+    actionIfExists(name, id, args) {
+        if (!this.existsAction(name)) {
+            return undefined;
+        }
+
+        const result = this.action(name, id, args);
+
+        if (typeof result === "undefined") {
+            return null;
+        }
+
+        return result;
+    }
+
     action(name, id, args) {
-        if (!name) {
+        if (!name || name == "") {
             throw new Error("Empty parameter: name");
         }
 
