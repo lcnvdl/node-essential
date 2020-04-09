@@ -13,6 +13,10 @@ class InjectionManager {
     add(nameOrConstructor, creator, settings) {
         const name = getName(nameOrConstructor);
 
+        if (!name || name === undefined) {
+            throw new Error("Couldn't get the name of the object.");
+        }
+
         creator = creator || (() => new (nameOrConstructor)({ injection: this }));
         settings = settings || {};
         settings.scope = settings.scope || "singleton";
