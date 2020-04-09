@@ -18,6 +18,9 @@ module.exports = {
         Extensions: {
             get Array() {
                 return require("./system/extensions/array");
+            },
+            get Promise() {
+                return require("./system/extensions/promise");
             }
         },
         Data: {
