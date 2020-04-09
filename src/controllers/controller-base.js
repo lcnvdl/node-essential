@@ -1,5 +1,7 @@
 /** @typedef {import("../../managers/system/injection.manager")} InjectionManager */
 
+const camelCase = require("camelcase");
+
 class ControllerBase {
     constructor({ injection }) {
         /** @type {InjectionManager} */
@@ -19,15 +21,25 @@ class ControllerBase {
         return Promise.resolve();
     }
 
+    mapAction(name) {
+        return camelCase(`${name}_action`);
+    }
+
     action(name, id, args) {
+        if (!name) {
+            throw new Error("Empty parameter: name");
+        }
+
         if (typeof args === "undefined" && typeof id !== "string") {
             args = id;
             id = undefined;
         }
 
-        const action = this[`action${name}`] || this[`action${name.substr(0, 1).toUpperCase() + name.substr(1)}`];
+        const actionName = this.mapAction(name);
+        const action = this[actionName];
+
         if (!action) {
-            throw new Error(`Action ${(name || 'empty')} not found`);
+            throw new Error(`Action "${name}" not found. The mapped method "${actionName}" for the action is missing`);
         }
 
         if (id) {
