@@ -14,6 +14,26 @@ describe("InjectionManager", () => {
         instance = new InjectionManager();
     });
 
+    describe("getByTag", () => {
+        beforeEach(() => {
+            instance.add("number_1", () => 1, { tag: "number" })
+            instance.add("number_2", () => 2, { tag: "number" })
+            instance.add("number_3", () => 3, { tag: "number" })
+            instance.add("text_1", () => "a", { tag: "text" })
+            instance.add("text_2", () => "b", { tag: "text" })
+            instance.add("text_3", () => "c", { tag: "text" })
+        });
+
+        it("unexisting tag should return an empty array", () => {
+            expect(instance.getByTag("x")).to.be.empty;
+        });
+
+        it("should work fine", () => {
+            expect(instance.getByTag("number")).to.be.deep.equal([1, 2, 3]);
+            expect(instance.getByTag("text")).to.be.deep.equal(["a", "b", "c"]);
+        });
+    });
+
     describe("add", () => {
         it("name should work fine", () => {
             instance.add("number", () => 1);

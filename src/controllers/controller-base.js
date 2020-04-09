@@ -36,15 +36,19 @@ class ControllerBase {
         return !!action;
     }
 
-    actionIfExists(name, id, args) {
+    async actionIfExists(name, id, args) {
         if (!this.existsAction(name)) {
             return undefined;
         }
 
-        const result = this.action(name, id, args);
+        let result = this.action(name, id, args);
+
+        if (result instanceof Promise) {
+            result = await result;
+        }
 
         if (typeof result === "undefined") {
-            return null;
+            result = null;
         }
 
         return result;

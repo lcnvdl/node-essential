@@ -16,8 +16,13 @@ class InjectionManager {
         creator = creator || (() => new (nameOrConstructor)({ injection: this }));
         settings = settings || {};
         settings.scope = settings.scope || "singleton";
+        settings.tags = settings.tags || [];
 
-        this._constructors[name] = { creator, settings };
+        if (settings.tags.length === 0 && settings.tag) {
+            settings.tags.push(settings.tag);
+        }
+
+        this._constructors[name] = { name, creator, settings };
 
         if (settings.lazy === false) {
             if (settings.scope === "singleton") {
@@ -64,6 +69,13 @@ class InjectionManager {
 
     getName(nameOrConstructor) {
         return getName(nameOrConstructor);
+    }
+
+    getByTag(tag) {
+        return Object.values(this._constructors)
+            .filter(m => m.settings.tags.indexOf(tag) !== -1)
+            .map(m => m.name)
+            .map(m => this.get(m));
     }
 
     /**

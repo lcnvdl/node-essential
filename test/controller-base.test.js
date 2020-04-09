@@ -8,6 +8,9 @@ class ControllerStub extends ControllerBase {
     }
     testWithoutReturnAction() {
     }
+    async asyncTestWithoutReturnAction() {
+        await Promise.resolve();
+    }
 }
 
 /** @type {InjectionManager} */
@@ -41,24 +44,28 @@ describe("ControllerBase", () => {
     });
 
     describe("#actionIfExists", () => {
-        it("null name", () => {
-            expect(controller.actionIfExists(null)).to.be.undefined;
+        it("null name", async () => {
+            expect(await controller.actionIfExists(null)).to.be.undefined;
         });
 
-        it("empty name", () => {
-            expect(controller.actionIfExists("")).to.be.undefined;
+        it("empty name", async () => {
+            expect(await controller.actionIfExists("")).to.be.undefined;
         });
 
-        it("missing action", () => {
-            expect(controller.actionIfExists("my")).to.be.undefined;
+        it("missing action", async () => {
+            expect(await controller.actionIfExists("my")).to.be.undefined;
         });
 
-        it("action without return must return null instead of undefined", () => {
-            expect(controller.actionIfExists("testWithoutReturn")).to.be.null;
+        it("action without return must return null instead of undefined", async () => {
+            expect(await controller.actionIfExists("testWithoutReturn")).to.be.null;
         });
 
-        it("action", () => {
-            expect(controller.actionIfExists("test")).to.equals(100);
+        it("async action without return must return null instead of undefined", async () => {
+            expect(await controller.actionIfExists("asyncTestWithoutReturn")).to.be.null;
+        });
+
+        it("action", async () => {
+            expect(await controller.actionIfExists("test")).to.equals(100);
         });
     });
 
