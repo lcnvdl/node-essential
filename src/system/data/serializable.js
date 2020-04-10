@@ -39,6 +39,43 @@ class Serializable {
     }
 
     deserialize(data) {
+        if (!data) {
+            return null;
+        }
+
+        let serializableFields;
+        if (data instanceof Serializable) {
+            serializableFields = data.serializableFields;
+        }
+        else {
+            serializableFields = Object.keys(data);
+        }
+
+        serializableFields
+            .filter(k => k[0] !== "_")
+            .filter(k => this.serializableFields.some(f => f === k))
+            .forEach(k => {
+                let v = data[k];
+
+                if (typeof v !== "function") {
+
+                    if (data.customSerializers && data.customSerializers.some(m => m[k])) {
+                        v = data.customSerializers.find(m => m[k])[k](v);
+                    }
+
+                    this[k] = v;
+                }
+            });
+
+        Object.assign(this, data);
+        return this;
+    }
+
+    assign(data) {
+        if (!data) {
+            return null;
+        }
+
         Object.assign(this, data);
         return this;
     }
