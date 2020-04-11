@@ -1,0 +1,5 @@
+{
+    "$inherit": "b.json",
+    "a": true,
+    "b": 100
+}
