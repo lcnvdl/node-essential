@@ -29,7 +29,7 @@ class ControllersManager {
         }
 
         if (value === undefined) {
-            throw new Error(`Action "${name}" not found. The mapped method "${actionName}" for the action is missing`);
+            throw new Error(`Action "${name}" not found. The mapped method for the action is missing`);
         }
 
         return value;
