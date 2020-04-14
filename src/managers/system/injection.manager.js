@@ -1,7 +1,26 @@
 class InjectionManager {
-    constructor() {
+    /**
+     * @param [id] {string} id
+     * @param [parent] {InjectionManager} parent
+     */
+    constructor(id, parent) {
+        this._id = id || "root";
         this._instances = {};
         this._constructors = {};
+        this._parent = parent;
+    }
+
+    get name() {
+        return this._id;
+    }
+
+    get fullName() {
+        if (this._parent) {
+            return this._parent.fullName + "." + this._id;
+        }
+        else {
+            return this._id;
+        }
     }
 
     /**
@@ -75,6 +94,10 @@ class InjectionManager {
         return getName(nameOrConstructor);
     }
 
+    /**
+     * @param {string} tag Tag
+     * @returns {Array}
+     */
     getByTag(tag) {
         return Object.values(this._constructors)
             .filter(m => m.settings.tags.indexOf(tag) !== -1)
@@ -92,6 +115,12 @@ class InjectionManager {
 
         if (!this._instances[name]) {
             if (!this._constructors[name]) {
+                const parentValue = this._getFromParent(name);
+
+                if (parentValue) {
+                    return parentValue;
+                }
+
                 if (typeof defaultValue === "undefined") {
                     throw new Error(`Missing constructor for the requested type or name "${name}"`);
                 }
@@ -104,6 +133,18 @@ class InjectionManager {
         }
 
         return this._instances[name];
+    }
+
+    _getFromParent(nameOrConstructor) {
+        let parent = this._parent;
+        let result = null;
+
+        while (result == null && parent) {
+            result = parent.getIfExists(nameOrConstructor);
+            parent = parent.parent;
+        }
+
+        return result;
     }
 
     getIfExists(nameOrConstructor) {
@@ -121,6 +162,24 @@ class InjectionManager {
         });
 
         return this;
+    }
+
+    calve(name) {
+        const son = new InjectionManager(name, this);
+        this.add(`$injection.${son.fullName}`, () => son, { tag: "$child" });
+        return son;
+    }
+
+    child(name) {
+        return this.get(`$injection.${name}`);
+    }
+
+    dispose() {
+        if (this._parent) {
+            this._parent.destroy(`$injection.${this.fullName}`);
+        }
+        this.getByTag("$child").forEach(m => m.dispose());
+        Object.keys(this).forEach(k => this[k] = null);
     }
 }
 
