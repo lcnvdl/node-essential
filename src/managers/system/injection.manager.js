@@ -36,6 +36,19 @@ class InjectionManager {
             throw new Error("Couldn't get the name of the object.");
         }
 
+        if (typeof nameOrConstructor === "string") {
+            if (typeof creator === "undefined") {
+                throw new Error("Undefined values for string keys are not allowed.");
+            }
+            else if (typeof creator !== "function") {
+                const v = creator;
+                creator = () => v;
+            }
+        }
+        else if (creator !== null && creator !== undefined && typeof creator !== "function") {
+            throw new Error("The optional creator of a constructor can only be a function.");
+        }
+
         creator = creator || (() => new (nameOrConstructor)({ injection: this }));
         settings = settings || {};
         settings.scope = settings.scope || "singleton";

@@ -41,6 +41,41 @@ describe("InjectionManager", () => {
             expect(value).to.equals(1);
         });
 
+        it("name with undefined value shoud fail", () => {
+            expect(() => instance.add("number")).to.throw(Error);
+        });
+
+        it("name with null value should save null", () => {
+            instance.add("null", null);
+            expect(instance.get("null")).to.be.null;
+        });
+
+        it("name with any value should save thay value", () => {
+            instance.add("v1", 1);
+            instance.add("v2", "test");
+            expect(instance.get("v1")).to.equal(1);
+            expect(instance.get("v2")).to.equal("test");
+        });
+
+        it("constructor with value should fail", () => {
+            expect(() => instance.add(TestClass, "test")).to.throw(Error);
+        });
+
+        it("constructor with zero value should fail", () => {
+            expect(() => instance.add(TestClass, 0)).to.throw(Error);
+        });
+
+        it("constructor with numeric value should fail", () => {
+            expect(() => instance.add(TestClass, 1)).to.throw(Error);
+        });
+
+        it("constructor with null value should create new instance", () => {
+            instance.add(TestClass, null);
+            let value = instance.get(TestClass);
+            expect(value).to.be.ok;
+            expect(value).to.be.instanceOf(TestClass);
+        });
+
         it("constructor should work fine", () => {
             instance.add(TestClass);
             let value = instance.get(TestClass);
