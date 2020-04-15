@@ -27,14 +27,6 @@ const Essentials = {
              */
             get InjectionManager() {
                 return require("./managers/system/injection.manager");
-            },
-            IO: {
-                /**
-                 * @type {JsonLoader}
-                 */
-                get JsonLoader() {
-                    return require("./system/io/json-loader");
-                }
             }
         }
     },
@@ -87,6 +79,14 @@ const Essentials = {
              */
             get ValidatorBase() {
                 return require("./system/validators/validator-base");
+            }
+        },
+        IO: {
+            /**
+             * @type {JsonLoader}
+             */
+            get JsonLoader() {
+                return require("./system/io/json-loader");
             }
         }
     }
