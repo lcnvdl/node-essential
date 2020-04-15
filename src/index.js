@@ -11,6 +11,11 @@ module.exports = {
             },
             get InjectionManager() {
                 return require("./managers/system/injection.manager");
+            },
+            IO: {
+                get JsonLoader() {
+                    return require("./system/io/json-loader");
+                }
             }
         }
     },
