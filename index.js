@@ -1,1 +1,3 @@
-module.exports = require("./src/index");
+const Essentials = require("./src/index");
+
+module.exports = Essentials;
