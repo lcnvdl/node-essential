@@ -61,12 +61,26 @@ const Essentials = {
                 return require("./system/types/range");
             }
         },
+        Helpers: {
+            /**
+             * @type {PromiseHelper} PromiseHelper
+             */
+            get PromiseHelper() {
+                return require("./system/helpers/promise.helper");
+            }
+        },
         Validators: {
             /**
-             * @type {Required} Required
+             * @type {RequiredValidator} Required
              */
             get Required() {
                 return require("./system/validators/required");
+            },
+            /**
+             * @type {TypeValidator} TypeValidator
+             */
+            get Type() {
+                return require("./system/validators/type-validator");
             },
             /**
              * @type {Array<any>} All

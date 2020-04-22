@@ -1,3 +1,4 @@
 module.exports = {
-    Required: require("./required")
+    Required: require("./required"),
+    Type: require("./type-validator")
 };
