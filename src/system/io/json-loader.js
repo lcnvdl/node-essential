@@ -1,5 +1,5 @@
-const path = require("path");
-const fs = require("fs");
+let path;
+let fs;
 
 class JsonLoader {
     /**
@@ -9,7 +9,15 @@ class JsonLoader {
         if (!file || file.toLowerCase().indexOf(".json") === -1) {
             throw new Error("The file is not a JSON file.");
         }
-        
+
+        try {
+            path = path || require("path");
+            fs = fs || require("fs");
+        }
+        catch {
+            return null;
+        }
+
         const cwd = path.dirname(file);
 
         let content = JSON.parse(fs.readFileSync(file, "utf8"));
