@@ -9,6 +9,10 @@ class ControllerBase {
         this._initialized = false;
     }
 
+    get actionsPrefix() {
+        return "";
+    }
+
     get isInitialized() {
         return this._initialized;
     }
@@ -30,8 +34,7 @@ class ControllerBase {
             return false;
         }
 
-        const actionName = this.mapAction(name);
-        const action = this[actionName];
+        const { action } = this.getActionFromName(name);
 
         return !!action;
     }
@@ -64,8 +67,7 @@ class ControllerBase {
             id = undefined;
         }
 
-        const actionName = this.mapAction(name);
-        const action = this[actionName];
+        const { action, actionName } = this.getActionFromName(name);
 
         if (!action) {
             throw new Error(`Action "${name}" not found. The mapped method "${actionName}" for the action is missing`);
@@ -89,6 +91,27 @@ class ControllerBase {
                 throw new Error(`Invalid type for parameter: ${name}`);
             }
         }
+    }
+
+    getActionFromName(name) {
+        const actionName = this.mapAction(name);
+
+        let action;
+        
+        if (this.actionsPrefix && this.actionsPrefix !== "") {
+            if (name.indexOf(this.actionsPrefix) === -1) {
+                action = null;
+            }
+            else {
+                const altName = this.mapAction(name.replace(this.actionsPrefix, ""));
+                action = this[actionName] || this[altName];
+            }
+        }
+        else {
+            action = this[actionName];
+        }
+
+        return { action, actionName };
     }
 }
 

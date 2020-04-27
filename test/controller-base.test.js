@@ -3,6 +3,15 @@ const InjectionManager = require("../src/managers/system/injection.manager");
 const ControllerBase = require("../src/controllers/controller-base");
 
 class ControllerStub extends ControllerBase {
+    constructor(m) {
+        super(m);
+        this.prefix = "";
+    }
+
+    get actionsPrefix() {
+        return this.prefix;
+    }
+
     testAction() {
         return 100;
     }
@@ -40,6 +49,32 @@ describe("ControllerBase", () => {
 
         it("action", () => {
             expect(controller.existsAction("test")).to.be.true;
+        });
+    });
+
+    describe("#existsActionWithPrefix", () => {
+        beforeEach(() => {
+            controller.prefix = "xyz"
+        });
+
+        it("null name", () => {
+            expect(controller.existsAction(null)).to.be.false;
+        });
+
+        it("empty name", () => {
+            expect(controller.existsAction("")).to.be.false;
+        });
+
+        it("missing action", () => {
+            expect(controller.existsAction("my")).to.be.false;
+        });
+
+        it("action with prefix", () => {
+            expect(controller.existsAction("xyzTest")).to.be.true;
+        });
+
+        it("action", () => {
+            expect(controller.existsAction("test")).to.be.false;
         });
     });
 
