@@ -25,8 +25,9 @@ class AutoImporter {
 
     /**
      * @param {InjectionManager} injection Injection manager
+     * @param {Function} [mapFn] Map the require
      */
-    async inject(injection) {
+    async inject(injection, mapFn) {
         const files = await this.__getFiles();
 
         files.forEach(file => {
@@ -38,7 +39,12 @@ class AutoImporter {
             name = name.split(".").join("_");
             name = camelCase(name, { pascalCase: true });
 
-            injection.add(name, () => require(absFile));
+            if (mapFn) {
+                injection.add(name, mapFn(() => require(absFile)));
+            }
+            else {
+                injection.add(name, () => require(absFile));
+            }
         });
     }
 
