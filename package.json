@@ -1,6 +1,6 @@
 {
   "name": "node-essential",
-  "version": "0.0.18",
+  "version": "0.0.20",
   "description": "Essential classes for business-oriented mvc projects.",
   "main": "index.js",
   "scripts": {
@@ -24,9 +24,11 @@
   "homepage": "https://github.com/lcnvdl/node-essential#readme",
   "devDependencies": {
     "chai": "^4.2.0",
-    "mocha": "^7.1.1"
+    "mocha": "^8.1.3",
+    "nyc": "^15.1.0"
   },
   "dependencies": {
-    "camelcase": "^6.0.0"
+    "camelcase": "^6.0.0",
+    "glob": "^7.1.6"
   }
 }
