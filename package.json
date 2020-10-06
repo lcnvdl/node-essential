@@ -1,6 +1,6 @@
 {
   "name": "node-essential",
-  "version": "0.0.21",
+  "version": "0.0.22",
   "description": "Essential classes for business-oriented mvc projects.",
   "main": "index.js",
   "scripts": {
