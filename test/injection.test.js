@@ -41,6 +41,15 @@ describe("InjectionManager", () => {
             expect(value).to.equals(1);
         });
 
+        it("instance should be destroyed if the creator changes", () => {
+            instance.add("number", () => 1);
+            let value1 = instance.get("number");
+            instance.add("number", () => 2);
+            let value2 = instance.get("number");
+            expect(value1).to.equals(1);
+            expect(value2).to.equals(2);
+        });
+
         it("name with undefined value shoud fail", () => {
             expect(() => instance.add("number")).to.throw(Error);
         });

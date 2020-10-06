@@ -60,6 +60,10 @@ class InjectionManager {
 
         this._constructors[name] = { name, creator, settings };
 
+        if (typeof this._instances[name] !== "undefined") {
+            delete this._instances[name];
+        }
+
         if (settings.lazy === false) {
             if (settings.scope === "singleton") {
                 this.get(nameOrConstructor);
