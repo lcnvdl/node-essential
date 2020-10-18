@@ -14,9 +14,20 @@ class Serializable {
             let v = this[k];
 
             if (typeof v !== "function") {
-
                 if (this.customSerializers.some(m => m[k])) {
-                    v = this.customSerializers.find(m => m[k])[k](v);
+                    let serializer = this.customSerializers.find(m => m[k])[k];
+
+                    if (serializer.constructor && Object.getPrototypeOf(serializer).name === "Serializable") {
+                        if (Array.isArray(v)) {
+                            v = v.map(m => m.serialize());
+                        }
+                        else if (v) {
+                            v = v.serialize();
+                        }
+                    }
+                    else {
+                        v = serializer(v);
+                    }
                 }
 
                 dict[k] = v;
