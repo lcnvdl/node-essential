@@ -4,6 +4,8 @@
 /** @typedef {import("./system/io/json-loader")} JsonLoader */
 /** @typedef {import("./system/data/serializable")} Serializable */
 /** @typedef {import("./system/types/range")} Range */
+/** @typedef {import("./system/validators/type-validator")} TypeValidator */
+/** @typedef {import("./system/validators/regex-validator")} RegexValidator */
 
 const Essentials = {
     Controllers: {
@@ -81,6 +83,12 @@ const Essentials = {
              */
             get Type() {
                 return require("./system/validators/type-validator");
+            },
+            /**
+             * @type {RegexValidator} RegexValidator
+             */
+            get Regex() {
+                return require("./system/validators/regex-validator");
             },
             /**
              * @type {Array<any>} All
