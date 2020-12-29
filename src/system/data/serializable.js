@@ -73,12 +73,16 @@ class Serializable {
                     if (data.customSerializers && data.customSerializers.some(m => m[k])) {
                         v = data.customSerializers.find(m => m[k])[k](v);
                     }
+                    else if (this[k] instanceof Date) {
+                        if (typeof v === "string") {
+                            v = new Date(v);
+                        }
+                    }
 
                     this[k] = v;
                 }
             });
 
-        Object.assign(this, data);
         return this;
     }
 

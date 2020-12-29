@@ -1,6 +1,14 @@
 const { expect } = require("chai");
 const Serializable = require("../src/system/data/serializable");
 
+class DeserializeClass extends Serializable {
+  constructor() {
+    super();
+    this.date = new Date();
+    this.id = "id";
+  }
+}
+
 class TestSubclass extends Serializable {
   constructor() {
     super();
@@ -65,6 +73,24 @@ describe("Serializable", () => {
     });
   });
 
+  describe("#deserialize", () => {
+    it("should not add _id", () => {
+      const inst = new TestClass();
+      inst.deserialize({ _id: "test" });
+      expect(inst._id).to.be.undefined;
+    });
+
+    it("should work fine", () => {
+      const inst = new DeserializeClass();
+      inst.deserialize({ id: "Test", date: "2013-02-04T22:44:30.652Z" });
+      expect(inst.id).to.equals("Test");
+
+      const date = new Date("2013-02-04T22:44:30.652Z");
+      expect(typeof inst.date).to.not.equals("string");
+      expect(inst.date.getTime()).to.equals(date.getTime());
+    });
+  });
+
   describe("#serialize", () => {
     it("should ignore non serializable fields fine", () => {
       const result = instance.serialize();
@@ -78,7 +104,7 @@ describe("Serializable", () => {
       child.id = "child";
       instance.array.push(child);
       const result = instance.serialize();
-      
+
       expect(result).to.be.ok;
       expect(result.array).to.be.ok;
       expect(result.array.length).to.equals(1);
