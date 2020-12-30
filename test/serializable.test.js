@@ -33,6 +33,7 @@ class TestClass extends Serializable {
     this.serializations = 0;
     this.id = "id";
     this.array = [];
+    this.serializableChild = null;
   }
 
   get serializableFields() {
@@ -40,7 +41,7 @@ class TestClass extends Serializable {
   }
 
   get customSerializers() {
-    return [{ array: TestSubclass }];
+    return [{ array: TestSubclass, serializableChild: TestSubclass }];
   }
 
   serialize() {
@@ -78,6 +79,23 @@ describe("Serializable", () => {
       const inst = new TestClass();
       inst.deserialize({ _id: "test" });
       expect(inst._id).to.be.undefined;
+    });
+
+    it("custom serializers as array of classes", () => {
+      const inst = new TestClass();
+      inst.deserialize({ array: [{ id: "sub1" }, { id: "sub2" }] });
+      expect(inst.array.length).to.equals(2);
+      expect(inst.array[0].id).to.equals("sub1");
+      expect(inst.array[1].id).to.equals("sub2");
+      expect(inst.array[0]).instanceOf(TestSubclass);
+    });
+
+    it("custom serializers as class", () => {
+      const inst = new TestClass();
+      inst.deserialize({ serializableChild: { id: "sub1" } });
+      expect(inst.serializableChild).to.be.ok;
+      expect(inst.serializableChild.id).to.equals("sub1");
+      expect(inst.serializableChild).instanceOf(TestSubclass);
     });
 
     it("should work fine", () => {

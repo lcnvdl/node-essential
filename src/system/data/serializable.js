@@ -7,6 +7,10 @@ class Serializable {
         return [];
     }
 
+    static isSerializable(value) {
+        return value && value.constructor && Object.getPrototypeOf(value).name === "Serializable";
+    }
+
     serialize() {
         let dict = {};
 
@@ -17,7 +21,7 @@ class Serializable {
                 if (this.customSerializers.some(m => m[k])) {
                     let serializer = this.customSerializers.find(m => m[k])[k];
 
-                    if (serializer.constructor && Object.getPrototypeOf(serializer).name === "Serializable") {
+                    if (Serializable.isSerializable(serializer)) {
                         if (Array.isArray(v)) {
                             v = v.map(m => m.serialize());
                         }
@@ -69,9 +73,33 @@ class Serializable {
                 let v = data[k];
 
                 if (typeof v !== "function") {
-
+                    /** @todo Esto puede estar mal, data nunca o casi nunca debería ser "Serializer", siempre es dict. */
                     if (data.customSerializers && data.customSerializers.some(m => m[k])) {
-                        v = data.customSerializers.find(m => m[k])[k](v);
+                        const serializer = data.customSerializers.find(m => m[k])[k];
+                        if (typeof serializer === "function" && (!serializer.prototype || !serializer.prototype.deserialize)) {
+                            v = serializer(v);
+                        }
+                        else {
+                            if (Array.isArray(v)) {
+                                v = v.map(m => (new serializer()).deserialize(m));
+                            }
+                            else {
+                                const instance = new serializer();
+                                v = instance.deserialize(v);
+                            }
+                        }
+                    }
+                    else if (this.customSerializers && this.customSerializers.some(m => m[k])) {
+                        const serializer = this.customSerializers.find(m => m[k])[k];
+                        if (Serializable.isSerializable(serializer)) {
+                            if (Array.isArray(v)) {
+                                v = v.map(m => (new serializer()).deserialize(m));
+                            }
+                            else {
+                                const instance = new serializer();
+                                v = instance.deserialize(v);
+                            }
+                        }
                     }
                     else if (this[k] instanceof Date) {
                         if (typeof v === "string") {
