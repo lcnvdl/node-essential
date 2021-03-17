@@ -92,6 +92,14 @@ describe("InjectionManager", () => {
             expect(value).to.be.instanceOf(TestClass);
         });
 
+        it("constructor with instanceshould work fine", () => {
+            const tcInstance = new TestClass();
+            instance.add(TestClass, tcInstance);
+            let value = instance.get(TestClass);
+            expect(value).to.be.ok;
+            expect(value).to.be.instanceOf(TestClass);
+        });
+
         it("missing name should fail", () => {
             instance.add("number", () => 1);
             let error = null;

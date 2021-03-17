@@ -46,7 +46,13 @@ class InjectionManager {
             }
         }
         else if (creator !== null && creator !== undefined && typeof creator !== "function") {
-            throw new Error("The optional creator of a constructor can only be a function.");
+            if (creator instanceof nameOrConstructor) {
+                const v = creator;
+                creator = () => v;
+            }
+            else {
+                throw new Error("The optional creator of a constructor can only be a function.");
+            }
         }
 
         creator = creator || (() => new (nameOrConstructor)({ injection: this }));
